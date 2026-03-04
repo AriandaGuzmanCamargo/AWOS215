@@ -102,5 +102,69 @@ const buscarCategoria = async (request, response) => {
         response.status(500).json({error: error.message});
     }
 };
+const obtenerProductos = async (req, res) => {
+    try {
+        const consulta = `
+            SELECT 
+                p.id,
+                p.nombre,
+                p.descripcion,
+                p.precio,
+                p.stock,
+                p.imagen_url,
+                c.nombre as categoria
+            FROM productos p
+            LEFT JOIN categoria c ON p.id_categoria = c.id
+            ORDER BY p.id ASC
+        `;
+        const resultado = await pool.query(consulta);
+        res.status(200).json(resultado.rows);
+    } catch (error) {
+        console.error(`Error: ${error}`);
+        res.status(500).json({ error: error.message });
+    }
+};
+const buscarProductos = async (req, res) => {
+    try {
+        const { q } = req.query;
+        if (!q || q.trim() === '') {
+            return res.status(400).json({ 
+                error: 'El parámetro "q" es requerido y no puede estar vacío'
+            });
+        }
+        const consulta = `
+            SELECT 
+                p.id,
+                p.nombre,
+                p.descripcion,
+                p.precio,
+                p.stock,
+                p.imagen_url,
+                c.nombre as categoria
+            FROM productos p
+            LEFT JOIN categoria c ON p.id_categoria = c.id
+            WHERE 
+                p.nombre ILIKE $1 
+                OR p.descripcion ILIKE $1
+                OR c.nombre ILIKE $1
+            ORDER BY p.nombre ASC
+        `;
+        const termino = `%${q}%`;
+        const resultado = await pool.query(consulta, [termino]);
+        
+        res.status(200).json({
+            cantidad: resultado.rows.length,
+            resultados: resultado.rows
+        });
+    } catch (error) {
+        console.error(`Error: ${error}`);
+        res.status(500).json({ error: error.message });
+    }
+};
 
-module.exports = { poblarProductos, buscarProducto, buscarCategoria };
+module.exports = {
+    
+};
+
+
+module.exports = { poblarProductos, buscarProducto, buscarCategoria, obtenerProductos, buscarProductos };
