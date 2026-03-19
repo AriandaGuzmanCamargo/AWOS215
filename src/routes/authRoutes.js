@@ -1,8 +1,8 @@
-const express = require('express');
-const router = express.Router();
-const authController = require ('../controllers/authController');
+const express = require('express');// Importa el módulo express para crear un router que manejará las rutas relacionadas con la autenticación de usuarios, como el registro y el inicio de sesión.
+const router = express.Router();// Crea una nueva instancia de Router de Express, que se utilizará para definir las rutas de autenticación. Esto permite organizar las rutas relacionadas con la autenticación en un módulo separado, lo que mejora la modularidad y la mantenibilidad del código.
+const authController = require ('../controllers/authController');// Importa el controlador de autenticación desde el archivo authController.js, que contiene la lógica para manejar las solicitudes de registro e inicio de sesión de usuarios. Este controlador se encargará de procesar las solicitudes, interactuar con la base de datos y generar respuestas adecuadas para el cliente.
 
-router.post('/register', authController.register);
+router.post('/register', authController.register);// Define una ruta POST para el registro de usuarios en la ruta '/register'. Cuando se recibe una solicitud POST en esta ruta, se llama a la función register del controlador de autenticación para manejar la lógica de registro de usuarios. Esta función se encargará de validar los datos proporcionados, crear un nuevo usuario en la base de datos y devolver una respuesta al cliente indicando el resultado del registro.
 router.post('/login', authController.login); // Agrega esta línea para la ruta de login
 
 module.exports = router;
